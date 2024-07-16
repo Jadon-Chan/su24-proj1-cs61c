@@ -23,19 +23,50 @@ static void update_head(game_state_t *state, unsigned int snum);
 
 /* Task 1 */
 game_state_t *create_default_state() {
-  // TODO: Implement this function.
-  return NULL;
+  snake_t *snake_p = malloc(sizeof(snake_t));
+  snake_p->head_col = 4;
+  snake_p->head_row = 2;
+  snake_p->tail_col = 2;
+  snake_p->tail_row = 2;
+  snake_p->live = true;
+
+  game_state_t *game_state_p = malloc(sizeof(game_state_t));
+  game_state_p->num_snakes = 1;
+  game_state_p->num_rows = 18;
+  game_state_p->snakes = snake_p;
+  game_state_p->board = malloc(18 * sizeof(char *));
+
+  for (int i = 0; i < 18; i++) {
+	  game_state_p->board[i] = malloc(21 * sizeof(char));
+  }
+  strcpy(game_state_p->board[0], "####################");
+  strcpy(game_state_p->board[17], "####################");
+  strcpy(game_state_p->board[2], "# d>D    *         #");
+  for (int i = 1; i < 17; i++) {
+	  if (i != 2) {
+		  strcpy(game_state_p->board[i], "#                  #");
+	  }
+  }
+
+  return game_state_p;
 }
 
 /* Task 2 */
 void free_state(game_state_t *state) {
-  // TODO: Implement this function.
+  for (int i = 0; i < state->num_rows; i++) {
+	  free(state->board[i]);
+  }
+  free(state->board);
+  free(state->snakes);
+  free(state);
   return;
 }
 
 /* Task 3 */
 void print_board(game_state_t *state, FILE *fp) {
-  // TODO: Implement this function.
+  for (int i = 0; i < state->num_rows; i++) {
+	  fprintf(fp, "%s\n", state->board[i]);
+  }
   return;
 }
 
@@ -71,8 +102,10 @@ static void set_board_at(game_state_t *state, unsigned int row, unsigned int col
   Returns false otherwise.
 */
 static bool is_tail(char c) {
-  // TODO: Implement this function.
-  return true;
+  if (c == 'w' || c == 'a' || c == 's' || c == 'd')
+	  return true;
+  else
+	  return false;
 }
 
 /*
@@ -81,8 +114,10 @@ static bool is_tail(char c) {
   Returns false otherwise.
 */
 static bool is_head(char c) {
-  // TODO: Implement this function.
-  return true;
+  if (c == 'W' || c == 'A' || c == 'S' || c == 'D' || c == 'x')
+	  return true;
+  else
+	  return false;
 }
 
 /*
@@ -90,8 +125,10 @@ static bool is_head(char c) {
   The snake consists of these characters: "wasd^<v>WASDx"
 */
 static bool is_snake(char c) {
-  // TODO: Implement this function.
-  return true;
+  if (is_head(c) || is_tail(c) || c == '^' || c == '<' || c == 'v' || c == '>')
+	  return true;
+  else
+	  return false;
 }
 
 /*
@@ -100,8 +137,16 @@ static bool is_snake(char c) {
   tail ("wasd").
 */
 static char body_to_tail(char c) {
-  // TODO: Implement this function.
-  return '?';
+  char ret_val = c;
+  if (c == '^')
+	  ret_val = 'w';
+  else if (c == '<')
+	  ret_val = 'a';
+  else if (c == 'v')
+	  ret_val = 's';
+  else if (c == '>')
+	  ret_val = 'd';
+  return ret_val;
 }
 
 /*
@@ -110,8 +155,16 @@ static char body_to_tail(char c) {
   body ("^<v>").
 */
 static char head_to_body(char c) {
-  // TODO: Implement this function.
-  return '?';
+  char ret_val = c;
+  if (c == 'W')
+	  ret_val = '^';
+  else if (c == 'A')
+	  ret_val = '<';
+  else if (c == 'S')
+	  ret_val = 'v';
+  else if (c == 'D')
+	  ret_val = '>';
+  return ret_val;
 }
 
 /*
@@ -120,8 +173,12 @@ static char head_to_body(char c) {
   Returns cur_row otherwise.
 */
 static unsigned int get_next_row(unsigned int cur_row, char c) {
-  // TODO: Implement this function.
-  return cur_row;
+  unsigned int ret_val = cur_row;
+  if (c == 'v' || c == 's' || c == 'S')
+	  ret_val++;
+  else if (c == '^' || c == 'w' || c == 'W')
+	  ret_val--;
+  return ret_val;
 }
 
 /*
@@ -130,8 +187,12 @@ static unsigned int get_next_row(unsigned int cur_row, char c) {
   Returns cur_col otherwise.
 */
 static unsigned int get_next_col(unsigned int cur_col, char c) {
-  // TODO: Implement this function.
-  return cur_col;
+  unsigned int ret_val = cur_col;
+  if (c == '>' || c == 'd' || c == 'D')
+	  ret_val++;
+  else if (c == '<' || c == 'a' || c == 'A')
+	  ret_val--;
+  return ret_val;
 }
 
 /*
@@ -142,8 +203,15 @@ static unsigned int get_next_col(unsigned int cur_col, char c) {
   This function should not modify anything.
 */
 static char next_square(game_state_t *state, unsigned int snum) {
-  // TODO: Implement this function.
-  return '?';
+  unsigned int curr_row = state->snakes[snum].head_row;
+  unsigned int curr_col = state->snakes[snum].head_col;
+  char head = get_board_at(state, curr_row, curr_col);
+
+  unsigned int next_row = get_next_row(curr_row, head);
+  unsigned int next_col = get_next_col(curr_col, head);
+  char next_head = get_board_at(state, next_row, next_col);
+
+  return next_head;
 }
 
 /*

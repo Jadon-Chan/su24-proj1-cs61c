@@ -97,37 +97,102 @@ bool test_is_vowel() {
 /* Task 4.1 */
 
 bool test_is_tail() {
-  // TODO: Implement this function.
+  for (char testcase = '\0'; testcase >= 0; testcase++) {
+	  if (testcase == 'w' || testcase == 'a' || testcase == 's' || testcase == 'd') {
+		  if (!assert_true("Failed on wasd test", is_tail(testcase))) {
+		  	  return false;
+		  }
+	  }
+	  else {
+		  if (!assert_false("Failed on non-wasd test", is_tail(testcase))) {
+			  return false;
+		  }
+	  }
+  }
   return true;
 }
 
 bool test_is_head() {
-  // TODO: Implement this function.
+  for (char testcase = '\0'; testcase >= 0; testcase++) {
+	  if (testcase == 'W' || testcase == 'A' || testcase == 'S' || testcase == 'D' || testcase == 'x') {
+		  if (!assert_true("Failed on WASDx test", is_head(testcase))) {
+		  	  return false;
+		  }
+	  }
+	  else {
+		  if (!assert_false("Failed on non-WASDx test", is_head(testcase))) {
+			  return false;
+		  }
+	  }
+  }
   return true;
 }
 
 bool test_is_snake() {
-  // TODO: Implement this function.
+  for (char testcase = '\0'; testcase >= 0; testcase++) {
+	  if (testcase == 'W' || testcase == 'A' || testcase == 'S' || testcase == 'D' || testcase == 'x' || testcase == 'w' || testcase == 'a' || testcase == 's' || testcase == 'd' || testcase == '^' || testcase == '<' || testcase == 'v' || testcase == '>') {
+		  if (!assert_true("Failed on WASDxwasd^<v> test", is_snake(testcase))) {
+		  	  return false;
+		  }
+	  }
+	  else {
+		  if (!assert_false("Failed on non-WASDxwasd^<v> test", is_snake(testcase))) {
+			  return false;
+		  }
+	  }
+  }
   return true;
 }
 
 bool test_body_to_tail() {
-  // TODO: Implement this function.
+  char body[5] = "^<v>";
+  char tail[5] = "wasd";
+  for (int i = 0; i < 4; i++) {
+	  if (!assert_equals_char("Failed on body_to_tail", tail[i], body_to_tail(body[i]))) {
+		  return false;
+	  }
+  }
   return true;
 }
 
 bool test_head_to_body() {
-  // TODO: Implement this function.
+  char body[5] = "^<v>";
+  char head[5] = "WASD";
+  for (int i = 0; i < 4; i++) {
+	  if (!assert_equals_char("Failed on head_to_body", body[i], head_to_body(head[i]))) {
+		  return false;
+	  }
+  }
   return true;
 }
 
 bool test_get_next_row() {
-  // TODO: Implement this function.
+  char up[4] = "^wW";
+  char down[4] = "vsS";
+  unsigned int random_row = 1 + rand();
+  for (int i = 0; i < 3; i++) {
+	  if (!assert_equals_unsigned_int("Failed on up", random_row-1, get_next_row(random_row, up[i]))) {
+		  return false;
+	  }
+	  if (!assert_equals_unsigned_int("Failed on down", random_row+1, get_next_row(random_row, down[i]))) {
+		  return false;
+	  }
+  }
   return true;
 }
 
 bool test_get_next_col() {
-  // TODO: Implement this function.
+  char left[4] = "<aA";
+  char right[4] = ">dD";
+  unsigned int random_col = 1 + rand();
+  for (int i = 0; i < 3; i++) {
+	  if (!assert_equals_unsigned_int("Failed on left", random_col-1, get_next_col(random_col, left[i]))) {
+		  return false;
+	  }
+	  if (!assert_equals_unsigned_int("Failed on right", random_col+1, get_next_col(random_col, right[i]))) {
+		  return false;
+	  }
+  }
   return true;
 }
 
